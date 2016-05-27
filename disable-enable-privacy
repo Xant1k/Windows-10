@@ -1,0 +1,737 @@
+chcp 1251 >nul
+@echo
+
+rem --- Отключить авто-передачу паролей к своим WiFi на сервер Microsoft (WiFiSense)---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v "value" /t REG_DWORD /d 0 /f 
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" /v "value" /t REG_DWORD /d 0 /f
+
+
+rem --- Отключение определения вашего расположения для AppStore и Других программ (Геозона)---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableWindowsLocationProvider" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocationScripting" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableSensors" /t REG_DWORD /d 1 /f
+
+
+REM --- Отключение Cortana ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f
+
+
+REM --- Открытие проводника на разделе "Этот компьютер" --- 
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /t REG_DWORD /d 1 /f 
+
+
+rem --- Запретить подключения удаленного помошника ---
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f
+
+
+rem --- Отключить доступ в интернет службе защиты аудио - Windows Media Digital Rights Management (DRM) ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
+
+
+rem --- Отключение возможности использования web камеры на Лок-скрине.
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d 1 /f
+
+
+rem --- Отключение фильтров URL и сбора информации о посещенных сайтах для "SmartScreen" ---
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 0 /f
+
+
+rem --- Отключение получения обновлений для средства удаления "вирусов" --- 
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
+
+
+rem --- Отключение поиска в сети из таскбара ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 1 /f
+
+
+rem --- Отключение поиска через поисковик BING из таскбара ---
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f
+
+
+rem --- Отключение сбора персональных данных, необходимых для "Кортаны" ---
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 0 /f
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /v "Enabled" /t REG_DWORD /d 0 /f
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 1 /f
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d 1 /f
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 0 /f
+
+
+rem --- Отключение сбора и передачи набираемых вами текстов ---
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Input\TIPC" /v "Enabled" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\TabletPC" /v "PreventHandwritingDataSharing" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" /v "PreventHandwritingErrorReports" /t REG_DWORD /d 1 /f
+
+
+rem --- Отключение и сброс собранной информации для предоставления рекламы ---
+reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f
+if %xOS%==x64 (
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f
+)
+
+
+rem --- Служба Магазина Windows AppStore (WSService), (стандартным способом не отключить)---
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\WSService" /v "Start" /t REG_DWORD /d 4 /f
+
+@pause
+
+
+rem --- Задача сборщика полных сведений компьютера и сети ---
+schtasks /Change /TN "Microsoft\Windows\NetTrace\GatherNetworkInfo" /Disable
+
+rem --- Задача автоматически обновляет приложения Магазина Windows ---
+schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\Automatic App Update" /Disable
+
+rem --- Задачи сбора телеметрических данных программ ---
+schtasks /Change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /Disable
+
+rem --- Задачи для AppStore ---
+schtasks /Change /TN "Microsoft\Windows\CloudExperienceHost\CreateObjectTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\Clip\License Validation" /Disable
+
+rem --- Задача оценки объема использования диска ---
+schtasks /Change /TN "Microsoft\Windows\DiskFootprint\Diagnostics" /Disable
+
+rem --- Задача измеряет быстродействие и возможности системы ---
+schtasks /Change /TN "Microsoft\Windows\Maintenance\WinSAT" /Disable
+
+rem --- Задачи контроля и выполнения семейной безопасности ---
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyMonitor" /Disable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyRefresh" /Disable
+
+rem --- Задача анализирования энергопотребления системы ---
+schtasks /Change /TN "Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" /Disable
+
+rem --- Задачи Обслуживания памяти во время простоя и при ошибках ---
+schtasks /Change /TN "Microsoft\Windows\MemoryDiagnostic\ProcessMemoryDiagnosticEvents" /Disable
+schtasks /Change /TN "Microsoft\Windows\MemoryDiagnostic\RunFullMemoryDiagnostic" /Disable
+
+rem --- Задачи "CEIP" Программы улучшения качества программного обеспечения ---
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\BthSQM" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\HypervisorFlightingTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /Disable
+schtasks /Change /TN "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver" /Disable
+
+rem --- Задача собирает и загружает данные "SQM" (Software Quality Metrics) для программного обеспечения ---
+rem --- Одна из задач для "CEIP" (Customer Experience Improvement Program) программа улучшения качества программного обеспечения ---
+schtasks /Change /TN "Microsoft\Windows\Autochk\Proxy" /Disable
+
+rem --- Задача SIUF (System Initiated User Feedback) Обратная связь с пользователями ---
+rem --- Помогает понять Microsoft, что вы думаете о различных функциях в операционной системе ---
+rem --- И то, что вы, возможно, захотите увидеть в будущем ---
+schtasks /Change /TN "Microsoft\Windows\Feedback\Siuf\DmClient" /Disable
+
+rem --- Задача для "CEIP" ---
+schtasks /Change /TN "Microsoft\Windows\PI\Sqm-Tasks" /Disable
+
+rem --- Задача отправки отчетов об ошибках ---
+schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Disable
+
+rem --- Задача очистки системного диска во время простоя  ---
+schtasks /Change /TN "Microsoft\Windows\DiskCleanup\SilentCleanup" /Disable
+
+rem --- Задача, выполняющая сбор данных для SmartScreen ---
+schtasks /Change /TN "Microsoft\Windows\AppID\SmartScreenSpecific" /Disable
+
+rem --- Задачи проверки и обновления Карт AppStore ---
+schtasks /Change /TN "Microsoft\Windows\Maps\MapsToastTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\Maps\MapsUpdateTask" /Disable
+
+rem --- Задача для синхронизации AppSrore приложений ---
+schtasks /Change /TN "Microsoft\Windows\SettingSync\NetworkStateChangeTask" /Disable
+
+rem --- Задачи обслуживания и проверки лицензий приложений AppStore из Магазина Windows ---
+schtasks /Change /TN "Microsoft\Windows\WS\License Validation" /Disable
+schtasks /Change /TN "Microsoft\Windows\WS\WSTask" /Disable
+
+rem --- Задача агента дистанционного отслеживания влияния на приложения ---
+schtasks /Change /TN "Microsoft\Windows\Application Experience\AitAgent" /Disable
+
+
+
+rem --- Биометрическая служба Windows "WbioSrvc" ---
+sc config WbioSrvc start= disabled
+
+rem --- Служба общих сетевых ресурсов проигрывателя Windows Media "WMPNetworkSvc" ---
+net stop WMPNetworkSvc
+sc config WMPNetworkSvc start= disabled
+
+rem --- Служба наблюдения за датчиками "SensrSvc" (кооректировка яркости дисплея, поворота экрана и т.д.) ---
+net stop SensrSvc
+sc config SensrSvc start= disabled
+
+rem --- Служба "Служба датчиков" (датчики поворота дисплея, местоположения и т.д.) ---
+sc config SensorService start= disabled
+
+rem --- Служба "Служба данных датчиков" ---
+sc config SensorDataService start= disabled
+
+rem --- Стандартная служба сборщика центра диагностики Microsoft "diagnosticshub.standardcollector.service" ---
+net stop diagnosticshub.standardcollector.service
+sc config diagnosticshub.standardcollector.service start= disabled
+
+rem --- Служба DataCollectionPublishingService "DcpSvc" заливает в облако все данные от приложений ---
+net stop DcpSvc
+sc config DcpSvc start= disabled
+
+rem --- Служба Windows Search для Индексирования контента "WSearch", "ускоряет" поиск файлов ---
+net stop WSearch
+sc config WSearch start= disabled
+
+rem --- Служба маршрутизации push-сообщений WAP "dmwappushservice" ---
+net stop dmwappushservice
+sc config dmwappushservice start= disabled
+
+rem --- Служба диагностического отслеживания "DiagTrack" ---
+net stop DiagTrack
+sc config DiagTrack start= disabled
+
+rem --- Служба Диспетчер скачанных карт "MapsBroker" ---
+sc config MapsBroker start= disabled
+
+rem --- Службы для Xbox Live ---
+sc config XblGameSave start= disabled
+sc config XblAuthManager start= disabled
+
+rem --- служба WalletService, "управление" вашими "бабосиками" =) ---
+sc config WalletService start= disabled
+
+rem --- Служба Посредник подключений к сети "NcbService" для Магазина AppStore ---
+net stop NcbService
+sc config NcbService start= disabled
+
+rem --- Служба Superfetch "SysMain" постоянно, во время простоя, анализирует систему и приложения для ускорения запуска (постоянно насилует диск) ---
+net stop SysMain
+sc config SysMain start= disabled
+
+
+
+
+
+
+chcp 1251 >nul
+@echo
+
+rem --- Включить авто-передачу паролей к своим WiFi на сервер Microsoft ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v "value" /t REG_DWORD /d 1 /f 
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" /v "value" /t REG_DWORD /d 1 /f
+
+rem --- Включение определения вашего расположения для AppStore и Других программ (Геозона)---
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableWindowsLocationProvider" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocationScripting" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableSensors" /f
+
+rem --- Включение Cortana ---
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f
+
+REM --- Открытие проводника на разделе "По умолчанию"- Панель быстрого доступа --- 
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /f
+
+rem --- Разрешить подключения удаленного помошника (по умолчанию) ---
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 1 /f
+
+rem --- Включить доступ в интернет службе защиты аудио - Windows Media Digital Rights Management (DRM) ---
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /f
+
+rem --- Возможность использования web камеры с Лок-скрина. (по умолчанию)
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /f
+
+rem --- Включение фильтров URL и сбора информации о посещенных сайтах для "SmartScreen" ---
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /f
+
+rem --- Включение получения обновлений для средства удаления "вирусов" --- 
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /f
+
+rem --- Включение поиска в сети во время поиска на компьютере из таскбара ---
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /f
+
+rem --- Включение поиска в BING из таскбара (по усолчанию) ---
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /f
+
+rem --- Включение сбора персональных данных, необходимых для "Кортаны" "По умолчанию" ---
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /f
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /v "Enabled" /f
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputPersonalization" /f
+
+rem --- Включение сбора и передачи набираемых вами текстов "по умолчанию"---
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Input\TIPC" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\TabletPC" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" /v "PreventHandwritingErrorReports" /f
+
+rem --- Включение сброса собираемой информации для предоставления рекламы "по умолчанию" ---
+reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /f
+if %xOS%==x64 (
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /f
+)
+
+rem --- Служба Магазина Windows AppStore (WSService) ---
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\WSService" /v "Start" /t REG_DWORD /d 3 /f
+
+@pause
+
+
+rem --- Задача сборщика полных сведений компьютера и сети ---
+schtasks /Change /TN "Microsoft\Windows\NetTrace\GatherNetworkInfo" /Enable
+
+rem --- Задача автоматически обновляет приложения Магазина Windows ---
+schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\Automatic App Update" /Enable
+
+rem --- Задачи сбора телеметрических данных программ ---
+schtasks /Change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /Enable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /Enable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /Enable
+
+rem --- Задача для AppStore ---
+schtasks /Change /TN "Microsoft\Windows\CloudExperienceHost\CreateObjectTask" /Enable
+
+rem --- Задача оценки объема использования диска ---
+schtasks /Change /TN "Microsoft\Windows\DiskFootprint\Diagnostics" /Enable
+
+rem --- Задача измеряет быстродействие и возможности системы ---
+schtasks /Change /TN "Microsoft\Windows\Maintenance\WinSAT" /Enable
+
+rem --- Задачи контроля и выполнения семейной безопасности ---
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyMonitor" /Enable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyRefresh" /Enable
+
+rem --- Задача анализирования энергопотребления системы ---
+schtasks /Change /TN "Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" /Enable
+
+rem --- Задачи Обслуживания памяти во время простоя и при ошибках ---
+schtasks /Change /TN "Microsoft\Windows\MemoryDiagnostic\ProcessMemoryDiagnosticEvents" /Enable
+schtasks /Change /TN "Microsoft\Windows\MemoryDiagnostic\RunFullMemoryDiagnostic" /Enable
+
+rem --- Задачи "CEIP" Программы улучшения качества программного обеспечения ---
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\BthSQM" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\HypervisorFlightingTask" /Enable
+schtasks /Change /TN "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /Enable
+
+rem --- Задача собирает и загружает данные "SQM" (Software Quality Metrics) для программного обеспечения ---
+rem --- Одна из задач для "CEIP" (Customer Experience Improvement Program) программа улучшения качества программного обеспечения ---
+schtasks /Change /TN "Microsoft\Windows\Autochk\Proxy" /Enable
+
+rem --- Задача SIUF (System Initiated User Feedback) Обратная связь с пользователями ---
+rem --- Помогает понять Microsoft, что вы думаете о различных функциях в операционной системе ---
+rem --- И то, что вы, возможно, захотите увидеть в будущем ---
+schtasks /Change /TN "Microsoft\Windows\Feedback\Siuf\DmClient" /Enable
+
+rem --- Задача для "CEIP" ---
+schtasks /Change /TN "Microsoft\Windows\PI\Sqm-Tasks" /Enable
+
+rem --- Задача отправки отчетов об ошибках ---
+schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Enable
+
+rem --- Задача очистки системного диска во время простоя ---
+schtasks /Change /TN "Microsoft\Windows\DiskCleanup\SilentCleanup" /Enable
+
+rem --- Задача, выполняющая сбор данных для SmartScreen ---
+schtasks /Change /TN "Microsoft\Windows\AppID\SmartScreenSpecific" /Enable
+
+rem --- Задача проверки и обновления Карт AppStore ---
+schtasks /Change /TN "Microsoft\Windows\Maps\MapsToastTask" /Enable
+schtasks /Change /TN "Microsoft\Windows\Maps\MapsUpdateTask" /Enable
+
+rem --- Задача для синхронизации AppSrore приложений ---
+schtasks /Change /TN "Microsoft\Windows\SettingSync\NetworkStateChangeTask" /Enable
+
+rem --- Задача обслуживания приложений AppStore из Магазина Windows ---
+schtasks /Change /TN "Microsoft\Windows\WS\License Validation" /Enable
+schtasks /Change /TN "Microsoft\Windows\WS\WSTask" /Enable
+
+rem --- Задача агента дистанционного отслеживания влияния на приложения ---
+schtasks /Change /TN "Microsoft\Windows\Application Experience\AitAgent" /Enable
+
+
+
+rem --- Биометрическая служба Windows "WbioSrvc" ---
+sc config WbioSrvc start= auto
+
+rem --- Служба общих сетевых ресурсов проигрывателя Windows Media "WMPNetworkSvc" ---
+sc config WMPNetworkSvc start= demand
+
+rem --- Служба наблюдения за датчиками "SensrSvc" (кооректировка яркости дисплея, поворота экрана и т.д.) ---
+sc config SensrSvc start= demand
+
+rem --- "Служба датчиков" (датчики поворота дисплея, местоположения и т.д.) ---
+sc config SensorService start= demand
+
+rem --- Служба "Служба данных датчиков" ---
+sc config SensorDataService start= demand
+
+rem --- Стандартная служба сборщика центра диагностики Microsoft "diagnosticshub.standardcollector.service" ---
+sc config diagnosticshub.standardcollector.service start= demand
+
+rem --- Служба DataCollectionPublishingService "DcpSvc" заливает в облако все "данные" от приложений ---
+sc config DcpSvc start= demand
+
+rem --- Служба Windows Search для Индексирования контента "WSearch" ---
+sc config WSearch start= delayed-auto
+
+rem --- Служба маршрутизации push-сообщений WAP "dmwappushservice" ---
+sc config dmwappushservice start= delayed-auto
+
+rem --- Служба диагностического отслеживания "DiagTrack" ---
+sc config DiagTrack start= auto
+
+rem --- Служба Диспетчер скачанных карт "MapsBroke" ---
+sc config MapsBroker start= delayed-auto
+
+rem --- Службы для Xbox Live ---
+sc config XblGameSave start= demand
+sc config XblAuthManager start= demand
+
+rem --- служба WalletService, управление вашими "бабосиками" =) ---
+sc config WalletService start= demand
+
+rem --- Служба Посредник подключений к сети "NcbService" для Магазина AppStore для получения уведомлений ---
+sc config NcbService start= demand
+
+rem --- Служба Superfetch "SysMain" постоянно, во время простоя, анализирует систему и приложения для ускорения запуска (она меня достала) ---
+sc config SysMain start= auto
+
+
+Отключение телеметрии в Планировщике заданий
+
+Запретить поиск в интернете из таскбара (Cortana) Останется только локальный
+Конфигурация компьютера > Административные шаблоны > Компоненты Windows
+Запретить поиск в интернете > Включить
+Разрешить использование Кортаны > Отключить
+
+Отключение синхронизации
+Конфигурация компьютера > Административные шаблоны > Компоненты Windows > Синхронизация параметров
+Дважда щёлкнуть опцию «Не синхронизировать»  ВКЛючить
+
+Отключение ненужных компонентов:
+
+Создать и запустить от Администратора .bat файл следующего содержания:
+
+Включение ненужных компонентов:
+Создать и запустить от Администратора .bat файл следующего содержания:
+Как сразу открыть в проводнике раздел Этот компьютер?
+Создать и запустить от Администратора .bat файл следующего содержания:
+Поиск драйверов
+Отключение:
+
+chcp 1251 >nul
+@echo
+
+rem --- Отключение поиска драйверов, 2 варианта (первый вариант говорят не работает) ---
+rem --- 1). Отключение поиска через центр обновления, эти настройки в: Доп. параметры системы -> Оборудование -> параментры установки устройств ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 0 /f
+rem --- 2). Дополнительно (аналог есть в: gpedit.msc -> Компьютер -> адм. шаблоны -> Система -> 
+rem --- Управление связью через интернет -> параметры связи -> откл. поиск драйверов ... -> ВКЛючить) ---
+rem --- Запретить поиск драверов через центр обновления ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /v "DontSearchWindowsUpdate" /t REG_DWORD /d 1 /f
+
+@pause
+
+
+Включение:
+
+chcp 1251 >nul
+@echo
+
+rem --- Включение поиска драйверов, 2 варианта ---
+rem --- 1). Включение поиска через центр обновления, эти настройки есть в: Доп. параметры системы -> Оборудование -> параментры установки устройств ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 1 /f
+rem --- 2). Дополнительно (аналог есть в: gpedit.msc -> Компьютер -> адм. шаблоны -> Система -> 
+rem --- Управление связью через интернет -> параметры связи -> откл. поиск драйверов ... -> Не задано или отключить) ---
+rem --- Разрешить поиск драверов через центр обновления ---
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /f
+Индкесирование слежение и сбор инфы для отправки
+
+Отключение:
+
+chcp 1251 >nul
+@echo
+
+REM --- Отключение служб индексирования, слежения и сбора инфы для отправки ---
+net stop DiagTrack
+net stop diagnosticshub.standardcollector.service
+net stop dmwappushservice
+net stop WMPNetworkSvc
+net stop WSearch
+
+sc config DiagTrack start= disabled
+sc config diagnosticshub.standardcollector.service start= disabled
+sc config dmwappushservice start= disabled
+sc config WMPNetworkSvc start= disabled
+sc config WSearch start= disabled
+
+@pause
+
+
+Включение:
+
+chcp 1251 >nul
+@echo
+
+REM --- Включение служб индексирования, слежения и сбора инфы для отправки ---
+net start DiagTrack
+net start WSearch
+net start diagnosticshub.standardcollector.service
+net start dmwappushservice
+net start WMPNetworkSvc
+
+sc config DiagTrack start= auto
+sc config diagnosticshub.standardcollector.service start= demand
+sc config dmwappushservice start= delayed-auto
+sc config WMPNetworkSvc start= demand
+sc config WSearch start= delayed-auto
+
+@pause
+
+Retail Demo
+
+Удаление:
+
+REM --- Удаление "Retail Demo" "скрытый режим для розничной торговли" --- 
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{12D4C69E-24AD-4923-BE19-31321C43A767}" /f
+
+
+Щёлкнуть правой кнопкой мыши по кнопке Пуск > Управление компьютером  > Планировщик заданий > Библиотека планировщика заданий > Microsoft > Windows
+
+Отключить
+в Application Experience: AitAgent/Microsoft Compatibility Appraiser/ProgramDataUpdater
+в Autochk: Proxy
+в Customer Experience Improvement Program: Consolidator/HypervisorFlightingTask/ KernelCeipTask/UsbCeip
+в DiskDiagnostic: Microsoft-Windows-DiskDiagnosticDataCollector
+в NetTrace: GatherNetworkInfo
+
+"Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem",
+"Microsoft\Windows\Shell\FamilySafetyMonitor",
+"Microsoft\Windows\Shell\FamilySafetyRefresh",
+"Microsoft\Office\Office 15 Subscription Heartbeat",
+"Microsoft\Office\OfficeTelemetryAgentFallBack",
+"Microsoft\Office\OfficeTelemetryAgentLogOn",
+"Microsoft\Windows\Application Experience\StartupAppTask",
+"Microsoft\Windows\Customer Experience Improvement Program\BthSQM",
+"Microsoft Office 15 Sync Maintenance for %COMPUTERNAME%-%USERNAME% %COMPUTERNAME%",
+
+Отключение телеметрии и сбора сведений:
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection
+"AllowTelemetry"=dword:00000000
+
+(Win+R) введите services.msc
+Служба диагностического отслеживания Diagnostics Tracking Service
+Измените значение Тип запуска на «Отключено»
+
+Для Pro версии нельзя отключить полностью телеметрию, работает только в значении 1 (отправка базовых данных):
+В этой строке заменить ноль на единицу:
+REG ADD HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection\ /v AllowTelemetry /t REG_DWORD /d 1 /f
+
+Отключение служб «DiagTrack» (сбор данных в компонентах Windows) и «dmwappushservice» (служба маршрутизации push-сообщений WAP)
+
+Щёлкнуть правой кнопкой мыши по кнопке Пуск > Командная строка (администратор).
+В открывшемся окне ввести:
+sc stop DiagTrack
+и
+sc stop dmwappushservice
+
+Или же вообще удалить:
+sc delete DiagTrack
+и
+sc delete dmwappushservice
+
+rem --- Задача синхронизации AppSrore приложений "BackgroundUploadTask"  ---
+psexec -s cmd /c schtasks /Change /TN "Microsoft\Windows\SettingSync\BackgroundUploadTask" /Enable
+
+rem --- Задача обновления метаданных устройств для приложений AppStore при подключении к интернету ---
+psexec -s cmd /c schtasks /Change /TN "Microsoft\Windows\Device Setup\Metadata Refresh" /Enable
+
+Отключение телеметрии и сборка данных для отправки
+
+chcp 1251 >nul
+@echo
+
+rem --- Отключение телеметрии и сбора данных для отправки ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant" /v "Enabled" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Compatibility-Troubleshooter" /v "Enabled" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Inventory" /v "Enabled" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Telemetry" /v "Enabled" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Steps-Recorder" /v "Enabled" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\AutoLogger\SQMLogger" /v "Start" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\SQMLogger" /v "Start" /t REG_DWORD /d 0 /f
+DEL /p C:\ProgramData\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl
+
+@pause
+
+Включение телеметрии и сбора данных для отправки
+
+chcp 1251 >nul
+@echo
+
+REM --- Включение телеметрии и сбора данных ---
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant" /v "Enabled" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Compatibility-Troubleshooter" /v "Enabled" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Inventory" /v "Enabled" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Telemetry" /v "Enabled" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Steps-Recorder" /v "Enabled" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 2 /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /f
+reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\SQMLogger" /v "Start" /t REG_DWORD /d 0 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\WMI\AutoLogger\SQMLogger" /v "Start" /t REG_DWORD /d 0 /f
+
+@pause
+
+
+Отключение заданий в планировщике по сбору информации для пересылки и др.
+
+chcp 1251 >nul
+@echo
+
+REM --- Отключение заданий в планировщике по сбору вашей информации для пересылки и др. ---
+schtasks /Change /TN "Microsoft\Windows\AppID\SmartScreenSpecific" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\AitAgent" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\Autochk\Proxy" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\BthSQM" /Disable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\HypervisorFlightingTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /Disable
+schtasks /Change /TN "Microsoft\Windows\FileHistory\File History (maintenance mode)" /Disable
+schtasks /Change /TN "Microsoft\Windows\Maintenance\WinSAT" /Disable
+schtasks /Change /TN "Microsoft\Windows\NetTrace\GatherNetworkInfo" /Disable
+schtasks /Change /TN "Microsoft\Windows\PI\Sqm-Tasks" /Disable
+schtasks /Change /TN "Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" /Disable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyMonitor" /Disable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyRefresh" /Disable
+schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Disable
+schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\Automatic App Update" /Disable
+
+@pause
+
+
+Включение заданий в планировщике по сборку информации для пересылки и др.
+
+chcp 1251 >nul
+@echo
+
+REM --- Включение заданий в планировщике по сбору вашей информации для пересылки и др. ---
+schtasks /Change /TN "Microsoft\Windows\AppID\SmartScreenSpecific" /Enable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\AitAgent" /Enable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /Enable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /Enable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /Enable
+schtasks /Change /TN "Microsoft\Windows\Autochk\Proxy" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\BthSQM" /Enable
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\HypervisorFlightingTask" /Enable
+schtasks /Change /TN "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /Enable
+schtasks /Change /TN "Microsoft\Windows\FileHistory\File History (maintenance mode)" /Enable
+schtasks /Change /TN "Microsoft\Windows\Maintenance\WinSAT" /Enable
+schtasks /Change /TN "Microsoft\Windows\NetTrace\GatherNetworkInfo" /Enable
+schtasks /Change /TN "Microsoft\Windows\PI\Sqm-Tasks" /Enable
+schtasks /Change /TN "Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" /Enable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyMonitor" /Enable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyRefresh" /Enable
+schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Enable
+schtasks /Change /TN "Microsoft\Windows\WindowsUpdate\Automatic App Update" /Enable
+
+@pause
+
+
+
+REG-файл с полезными настройками
+
+;отключение ненужных служб
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\WSearch]
+"Start"=dword:00000004
+Как изменить уже существующее значение(1) на 4
+Если служба отключена то почему в компонентах виндоуз стоит галка ?
+
+Программы-включение и отключение
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\WinDefend
+Start"=dword:00000004
+
+
+BAT-файл с полезными настройками
+
+Отключение Windows Search
+REG add "HKLM\SYSTEM\CurrentControlSet\services\WSearch" /v Start /t REG_DWORD /d 4 /f
+
+net stop WSearch
+
+Отключение Windows Defender
+REG add "HKLM\SYSTEM\CurrentControlSet\services\WinDefend" /v Start /t REG_DWORD /d 4 /f
+
+net stop WinDefend
+
+
+REM --- Disable tasks
+echo Disabling tasks. Depending on Windows version this may have errors, this is normal...
+timeout 3
+
+schtasks /Change /TN "\Microsoft\Windows\Application Experience\AitAgent" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Autochk\Proxy" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Maintenance\WinSAT" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\ActivateWindowsSearch" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\ConfigureInternetTimeService" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\DispatchRecoveryTasks" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\ehDRMInit" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\InstallPlayReady" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\mcupdate" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\MediaCenterRecoveryTask" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\ObjectStoreRecoveryTask" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\OCURActivate" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\OCURDiscovery" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\PBDADiscovery" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\PBDADiscoveryW1" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\PBDADiscoveryW2" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\PvrRecoveryTask" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\PvrScheduleTask" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\RegisterSearch" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\ReindexSearchRoot" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\SqlLiteRecoveryTask" /DISABLE
+schtasks /Change /TN "\Microsoft\Windows\Media Center\UpdateRecordPath" /DISABLE
+echo - done
+
+REM --- Kill services
+echo Killing Diagtrack-service (if it still exists)...
+sc stop Diagtrack
+sc delete Diagtrack
+echo - done
