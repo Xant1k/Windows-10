@@ -35,3 +35,30 @@ schtasks /Change /TN "Microsoft\Office\Office 15 Subscription Heartbeat" /Disabl
 goto:eof
 
 
+
+REM ============================ Telemetry Service Removal ===============================
+ECHO Start Removal of Telemetry Services!
+reg delete "HKLM\System\CurrentControlSet\Services\Diagtrack" /f 
+ECHO Complete!
+
+REM =========================== Disable DiagTrack ETL ===================
+ECHO Beginning ETL Disable!
+sc delete DiagTrack
+sc delete dmwappushservice
+echo "" > C:\ProgramData\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl
+
+REM =========================== Telemetry Schedule Task Remover ============
+ECHO Beginning Telemetry Schedule Disabler
+
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /Disable 
+schtasks /Change /TN "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /Disable 
+schtasks /Change /TN "Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" /Disable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyMonitor" /Disable
+schtasks /Change /TN "Microsoft\Windows\Shell\FamilySafetyRefresh" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\AitAgent" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /Disable
+schtasks /Change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /Disable
+schtasks /Change /TN "Microsoft\Windows\Autochk\Proxy" /Disable
+schtasks /change /TN "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /Disable
+schtasks /change /TN "Microsoft\Office\OfficeTelemetry\AgentFallBack2016" /Disable
+schtasks /Change /TN "Microsoft\Office\OfficeTelemetry\OfficeTelemetryAgentLogOn2016" /Disable
